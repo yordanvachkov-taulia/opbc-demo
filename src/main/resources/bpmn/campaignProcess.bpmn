@@ -12,11 +12,6 @@
     </bpmn:startEvent>
     <bpmn:sequenceFlow id="Flow_05uyryt" sourceRef="sendInvitationEmail" targetRef="reviewCampaign" />
     <bpmn:sequenceFlow id="Flow_0qdsa22" sourceRef="sendRejectionEmail" targetRef="reviewCampaign" />
-    <bpmn:sequenceFlow id="Flow_1sn8igq" sourceRef="scoreCheckGateway" targetRef="sendRejectionEmail">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${score&lt;80}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_0z0esu0" sourceRef="scoreCheckGateway" targetRef="sendInvitationEmail" />
-    <bpmn:sequenceFlow id="Flow_1yt696a" sourceRef="calculateScore" targetRef="scoreCheckGateway" />
     <bpmn:sequenceFlow id="Flow_0j9exyi" sourceRef="reviewCampaign" targetRef="endCampaignProcess" />
     <bpmn:sequenceFlow id="Flow_07cbcvj" sourceRef="startCampaignProcess" targetRef="receiveAssignmentsScore" />
     <bpmn:sequenceFlow id="Flow_0736y0b" sourceRef="receiveAssignmentsScore" targetRef="calculateScore" />
@@ -24,22 +19,9 @@
       <bpmn:incoming>Flow_07cbcvj</bpmn:incoming>
       <bpmn:outgoing>Flow_0736y0b</bpmn:outgoing>
     </bpmn:receiveTask>
-    <bpmn:serviceTask id="sendRejectionEmail" name="Send rejection email" camunda:asyncBefore="true" camunda:delegateExpression="${sendRejectionEmailTask}">
-      <bpmn:incoming>Flow_1sn8igq</bpmn:incoming>
-      <bpmn:outgoing>Flow_0qdsa22</bpmn:outgoing>
-    </bpmn:serviceTask>
     <bpmn:serviceTask id="calculateScore" name="Calculate total score" camunda:asyncAfter="true" camunda:delegateExpression="${calculateScoreTask}">
       <bpmn:incoming>Flow_0736y0b</bpmn:incoming>
-      <bpmn:outgoing>Flow_1yt696a</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:exclusiveGateway id="scoreCheckGateway" default="Flow_0z0esu0">
-      <bpmn:incoming>Flow_1yt696a</bpmn:incoming>
-      <bpmn:outgoing>Flow_0z0esu0</bpmn:outgoing>
-      <bpmn:outgoing>Flow_1sn8igq</bpmn:outgoing>
-    </bpmn:exclusiveGateway>
-    <bpmn:serviceTask id="sendInvitationEmail" name="Send invitation email" camunda:delegateExpression="${sendInvitationEmailTask}">
-      <bpmn:incoming>Flow_0z0esu0</bpmn:incoming>
-      <bpmn:outgoing>Flow_05uyryt</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0sqtn7t</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:userTask id="reviewCampaign" name="Review Campaign" camunda:formKey="embedded:app:forms/reviewForm.html">
       <bpmn:incoming>Flow_05uyryt</bpmn:incoming>
@@ -54,6 +36,23 @@
         <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT2M</bpmn:timeDuration>
       </bpmn:timerEventDefinition>
     </bpmn:boundaryEvent>
+    <bpmn:boundaryEvent id="Event_0ahh73a" attachedToRef="calculateScore">
+      <bpmn:outgoing>Flow_0qs1iyd</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_1nbqjoa" errorRef="Error_1akrp2l" />
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_0sqtn7t" sourceRef="calculateScore" targetRef="sendInvitationEmail" />
+    <bpmn:sequenceFlow id="Flow_0qs1iyd" sourceRef="Event_0ahh73a" targetRef="sendRejectionEmail" />
+    <bpmn:serviceTask id="sendRejectionEmail" name="Send rejection email" camunda:asyncBefore="true" camunda:delegateExpression="${sendRejectionEmailTask}">
+      <bpmn:extensionElements>
+        <camunda:failedJobRetryTimeCycle>R3/PT5S</camunda:failedJobRetryTimeCycle>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0qs1iyd</bpmn:incoming>
+      <bpmn:outgoing>Flow_0qdsa22</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="sendInvitationEmail" name="Send invitation email" camunda:delegateExpression="${sendInvitationEmailTask}">
+      <bpmn:incoming>Flow_0sqtn7t</bpmn:incoming>
+      <bpmn:outgoing>Flow_05uyryt</bpmn:outgoing>
+    </bpmn:serviceTask>
     <bpmn:textAnnotation id="TextAnnotation_01re5m8">
       <bpmn:text>On assignment submission</bpmn:text>
     </bpmn:textAnnotation>
@@ -63,6 +62,7 @@
     </bpmn:textAnnotation>
     <bpmn:association id="Association_1pfuwgj" sourceRef="campaignKeepAliveTimer" targetRef="TextAnnotation_0spzi5q" />
   </bpmn:process>
+  <bpmn:error id="Error_1akrp2l" name="lowScore" errorCode="lowScoreCode" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="campaignReviewCollaboration">
       <bpmndi:BPMNShape id="Participant_05fiand_di" bpmnElement="campaignProcessParticipant" isHorizontal="true">
@@ -80,27 +80,24 @@
         <di:waypoint x="970" y="350" />
         <di:waypoint x="1032" y="350" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1yt696a_di" bpmnElement="Flow_1yt696a">
-        <di:waypoint x="560" y="350" />
-        <di:waypoint x="615" y="350" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0z0esu0_di" bpmnElement="Flow_0z0esu0">
-        <di:waypoint x="665" y="350" />
-        <di:waypoint x="710" y="350" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1sn8igq_di" bpmnElement="Flow_1sn8igq">
-        <di:waypoint x="640" y="325" />
-        <di:waypoint x="640" y="240" />
-        <di:waypoint x="710" y="240" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0qdsa22_di" bpmnElement="Flow_0qdsa22">
-        <di:waypoint x="810" y="240" />
-        <di:waypoint x="920" y="240" />
-        <di:waypoint x="920" y="310" />
+        <di:waypoint x="780" y="350" />
+        <di:waypoint x="870" y="350" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_05uyryt_di" bpmnElement="Flow_05uyryt">
-        <di:waypoint x="810" y="350" />
-        <di:waypoint x="870" y="350" />
+        <di:waypoint x="780" y="240" />
+        <di:waypoint x="900" y="240" />
+        <di:waypoint x="900" y="310" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0sqtn7t_di" bpmnElement="Flow_0sqtn7t">
+        <di:waypoint x="560" y="350" />
+        <di:waypoint x="620" y="350" />
+        <di:waypoint x="620" y="240" />
+        <di:waypoint x="680" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0qs1iyd_di" bpmnElement="Flow_0qs1iyd">
+        <di:waypoint x="575" y="380" />
+        <di:waypoint x="680" y="380" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_1sqzht3_di" bpmnElement="startCampaignProcess">
         <dc:Bounds x="212" y="332" width="36" height="36" />
@@ -108,17 +105,8 @@
       <bpmndi:BPMNShape id="Activity_0j7ppx7_di" bpmnElement="receiveAssignmentsScore">
         <dc:Bounds x="300" y="310" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0ds22q5_di" bpmnElement="sendRejectionEmail">
-        <dc:Bounds x="710" y="200" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0tmwwb0_di" bpmnElement="calculateScore">
         <dc:Bounds x="460" y="310" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_0pfqenr_di" bpmnElement="scoreCheckGateway" isMarkerVisible="true">
-        <dc:Bounds x="615" y="325" width="50" height="50" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_19qazdc_di" bpmnElement="sendInvitationEmail">
-        <dc:Bounds x="710" y="310" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0khqeys_di" bpmnElement="reviewCampaign">
         <dc:Bounds x="870" y="310" width="100" height="80" />
@@ -132,6 +120,12 @@
       <bpmndi:BPMNShape id="TextAnnotation_0spzi5q_di" bpmnElement="TextAnnotation_0spzi5q">
         <dc:Bounds x="980" y="218" width="100" height="82" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0ds22q5_di" bpmnElement="sendRejectionEmail">
+        <dc:Bounds x="680" y="310" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_19qazdc_di" bpmnElement="sendInvitationEmail">
+        <dc:Bounds x="680" y="200" width="100" height="80" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_06dheu2_di" bpmnElement="campaignKeepAliveTimer">
         <dc:Bounds x="952" y="352" width="36" height="36" />
       </bpmndi:BPMNShape>
@@ -143,6 +137,9 @@
         <di:waypoint x="976" y="353" />
         <di:waypoint x="997" y="300" />
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Event_0322nlu_di" bpmnElement="Event_0ahh73a">
+        <dc:Bounds x="542" y="372" width="36" height="36" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Participant_1yfy02u_di" bpmnElement="internalAssignmentServiceParticipant" isHorizontal="true">
         <dc:Bounds x="160" y="77" width="950" height="60" />
       </bpmndi:BPMNShape>

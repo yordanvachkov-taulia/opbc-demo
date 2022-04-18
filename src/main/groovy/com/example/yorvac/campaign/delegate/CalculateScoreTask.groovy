@@ -1,6 +1,7 @@
 package com.example.yorvac.campaign.delegate
 
 import groovy.util.logging.Slf4j
+import org.camunda.bpm.engine.delegate.BpmnError
 import org.camunda.bpm.engine.delegate.DelegateExecution
 import org.camunda.bpm.engine.delegate.JavaDelegate
 import org.springframework.stereotype.Component
@@ -18,9 +19,9 @@ class CalculateScoreTask implements JavaDelegate {
    */
   @Override
   void execute(DelegateExecution execution) throws Exception {
-    String participant = execution.getBusinessKey()
+    String participant = execution.businessKey
 
-    //test score that is coming from database or another internal service
+    //testScore that is coming from database or another internal service
     int testScore = random.nextInt(100)
     log.info("Fetched score[${testScore}] from test for participant[${participant}]")
 
@@ -31,5 +32,10 @@ class CalculateScoreTask implements JavaDelegate {
 
     //setting the final score as a process variable for later decision making
     execution.setVariable('score', score)
+
+    if (score < 80) {
+      throw new BpmnError('lowScoreCode',
+        "Participant[${participant}] score[${score}] is less than required one[80]")
+    }
   }
 }
