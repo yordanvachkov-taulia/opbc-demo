@@ -41,7 +41,7 @@
       <bpmn:incoming>Flow_0z0esu0</bpmn:incoming>
       <bpmn:outgoing>Flow_05uyryt</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:userTask id="reviewCampaign" name="Review Campaign" camunda:formKey="embedded:app:forms/reviewCampaignForm.html">
+    <bpmn:userTask id="reviewCampaign" name="Review Campaign" camunda:formKey="embedded:app:forms/reviewForm.html">
       <bpmn:incoming>Flow_05uyryt</bpmn:incoming>
       <bpmn:incoming>Flow_0qdsa22</bpmn:incoming>
       <bpmn:outgoing>Flow_0j9exyi</bpmn:outgoing>
@@ -68,9 +68,14 @@
       <bpmndi:BPMNShape id="Participant_05fiand_di" bpmnElement="campaignProcessParticipant" isHorizontal="true">
         <dc:Bounds x="160" y="180" width="950" height="240" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="TextAnnotation_0spzi5q_di" bpmnElement="TextAnnotation_0spzi5q">
-        <dc:Bounds x="980" y="218" width="100" height="82" />
-      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0736y0b_di" bpmnElement="Flow_0736y0b">
+        <di:waypoint x="400" y="350" />
+        <di:waypoint x="460" y="350" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_07cbcvj_di" bpmnElement="Flow_07cbcvj">
+        <di:waypoint x="248" y="350" />
+        <di:waypoint x="300" y="350" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0j9exyi_di" bpmnElement="Flow_0j9exyi">
         <di:waypoint x="970" y="350" />
         <di:waypoint x="1032" y="350" />
@@ -97,19 +102,8 @@
         <di:waypoint x="810" y="350" />
         <di:waypoint x="870" y="350" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_07cbcvj_di" bpmnElement="Flow_07cbcvj">
-        <di:waypoint x="248" y="350" />
-        <di:waypoint x="300" y="350" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0736y0b_di" bpmnElement="Flow_0736y0b">
-        <di:waypoint x="400" y="350" />
-        <di:waypoint x="460" y="350" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_1sqzht3_di" bpmnElement="startCampaignProcess">
         <dc:Bounds x="212" y="332" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="TextAnnotation_01re5m8_di" bpmnElement="TextAnnotation_01re5m8">
-        <dc:Bounds x="250" y="239" width="100" height="40" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0j7ppx7_di" bpmnElement="receiveAssignmentsScore">
         <dc:Bounds x="300" y="310" width="100" height="80" />
@@ -132,6 +126,15 @@
       <bpmndi:BPMNShape id="Event_0k24264_di" bpmnElement="endCampaignProcess">
         <dc:Bounds x="1032" y="332" width="36" height="36" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_01re5m8_di" bpmnElement="TextAnnotation_01re5m8">
+        <dc:Bounds x="250" y="239" width="100" height="40" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0spzi5q_di" bpmnElement="TextAnnotation_0spzi5q">
+        <dc:Bounds x="980" y="218" width="100" height="82" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_06dheu2_di" bpmnElement="campaignKeepAliveTimer">
+        <dc:Bounds x="952" y="352" width="36" height="36" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Association_1fvyoe0_di" bpmnElement="Association_1fvyoe0">
         <di:waypoint x="240" y="335" />
         <di:waypoint x="281" y="279" />
@@ -140,9 +143,6 @@
         <di:waypoint x="976" y="353" />
         <di:waypoint x="997" y="300" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="Event_06dheu2_di" bpmnElement="campaignKeepAliveTimer">
-        <dc:Bounds x="952" y="352" width="36" height="36" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Participant_1yfy02u_di" bpmnElement="internalAssignmentServiceParticipant" isHorizontal="true">
         <dc:Bounds x="160" y="77" width="950" height="60" />
       </bpmndi:BPMNShape>
