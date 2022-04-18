@@ -1,0 +1,29 @@
+<form class="form-horizontal" role="form">
+  <h1>Enter assignment score</h1>
+  <div class="form-group">
+    <label for="score">Score</label>
+    <input type="text" id="score" name="score"/>
+  </div>
+
+  <script cam-script type="form-script">
+     var variableManager = camForm.variableManager
+     inject(['$rootScope', '$http', 'Uri', '$sce', function ($rootScope, $http, Uri, $sce) {
+        camForm.on('submit', function (evt) {
+          var assignmentScore = $('input:text[name=score]').val()
+
+          variableManager.createVariable({
+            name: 'assignmentScore',
+            type: 'Integer',
+            value: assignmentScore,
+          });
+        })
+     }])
+  </script>
+</form>
+
+
+
+
+
+
+

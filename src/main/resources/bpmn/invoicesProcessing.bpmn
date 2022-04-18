@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1rv511i" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.11.1" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
+  <bpmn:collaboration id="Collaboration_119gyfd">
+    <bpmn:participant id="invoicesProcessingParticipant" name="Invoices Processing" processRef="invoicesProcessing" />
+  </bpmn:collaboration>
+  <bpmn:process id="invoicesProcessing" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>Flow_0sydii8</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_1fz2v5v">
+        <bpmn:timeCycle xsi:type="bpmn:tFormalExpression">0 0 18 ? * * *</bpmn:timeCycle>
+      </bpmn:timerEventDefinition>
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="loadInvoices" name="Load Invoices" camunda:asyncAfter="true" camunda:delegateExpression="${loadInvoicesTask}">
+      <bpmn:incoming>Flow_0sydii8</bpmn:incoming>
+      <bpmn:outgoing>Flow_1qqilb7</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="Event_11kekmw">
+      <bpmn:incoming>Flow_1q7zkph</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:subProcess id="Activity_0rgrher" name="Invoice Validation">
+      <bpmn:incoming>Flow_1qqilb7</bpmn:incoming>
+      <bpmn:outgoing>Flow_1q7zkph</bpmn:outgoing>
+      <bpmn:multiInstanceLoopCharacteristics camunda:asyncBefore="true" camunda:exclusive="false" camunda:collection="${invoices}" camunda:elementVariable="invoice" />
+      <bpmn:startEvent id="Event_1m7vx25">
+        <bpmn:outgoing>Flow_0cpyjqf</bpmn:outgoing>
+      </bpmn:startEvent>
+      <bpmn:parallelGateway id="Gateway_1nlv24k" camunda:asyncAfter="true" camunda:exclusive="false">
+        <bpmn:incoming>Flow_1cs9zmo</bpmn:incoming>
+        <bpmn:outgoing>Flow_15ya722</bpmn:outgoing>
+        <bpmn:outgoing>Flow_1u3for3</bpmn:outgoing>
+        <bpmn:outgoing>Flow_1h3hs62</bpmn:outgoing>
+      </bpmn:parallelGateway>
+      <bpmn:sequenceFlow id="Flow_15ya722" sourceRef="Gateway_1nlv24k" targetRef="lineItemValidation" />
+      <bpmn:sequenceFlow id="Flow_1u3for3" sourceRef="Gateway_1nlv24k" targetRef="pricingValidation" />
+      <bpmn:sequenceFlow id="Flow_1h3hs62" sourceRef="Gateway_1nlv24k" targetRef="nameVlidation" />
+      <bpmn:parallelGateway id="Gateway_1fwdo6o" camunda:asyncAfter="true" camunda:exclusive="false">
+        <bpmn:incoming>Flow_1a9kjau</bpmn:incoming>
+        <bpmn:incoming>Flow_07ilog8</bpmn:incoming>
+        <bpmn:incoming>Flow_1yqk97g</bpmn:incoming>
+        <bpmn:outgoing>Flow_0akxmwa</bpmn:outgoing>
+      </bpmn:parallelGateway>
+      <bpmn:sequenceFlow id="Flow_1a9kjau" sourceRef="lineItemValidation" targetRef="Gateway_1fwdo6o" />
+      <bpmn:sequenceFlow id="Flow_07ilog8" sourceRef="pricingValidation" targetRef="Gateway_1fwdo6o" />
+      <bpmn:sequenceFlow id="Flow_1yqk97g" sourceRef="nameVlidation" targetRef="Gateway_1fwdo6o" />
+      <bpmn:sequenceFlow id="Flow_0cpyjqf" sourceRef="Event_1m7vx25" targetRef="scanInvoice" />
+      <bpmn:sequenceFlow id="Flow_1cs9zmo" sourceRef="scanInvoice" targetRef="Gateway_1nlv24k" />
+      <bpmn:serviceTask id="schedulePaymentInitiation" name="Schedule for Payment" camunda:asyncAfter="true" camunda:delegateExpression="${schedulePaymentTask}">
+        <bpmn:incoming>Flow_0akxmwa</bpmn:incoming>
+        <bpmn:outgoing>Flow_1n8pbmi</bpmn:outgoing>
+      </bpmn:serviceTask>
+      <bpmn:serviceTask id="scanInvoice" name="OCR" camunda:asyncAfter="true" camunda:exclusive="false" camunda:delegateExpression="${ocrTask}">
+        <bpmn:incoming>Flow_0cpyjqf</bpmn:incoming>
+        <bpmn:outgoing>Flow_1cs9zmo</bpmn:outgoing>
+      </bpmn:serviceTask>
+      <bpmn:serviceTask id="nameVlidation" name="Name Validation" camunda:asyncAfter="true" camunda:delegateExpression="${nameValidationTask}">
+        <bpmn:incoming>Flow_1h3hs62</bpmn:incoming>
+        <bpmn:outgoing>Flow_1yqk97g</bpmn:outgoing>
+      </bpmn:serviceTask>
+      <bpmn:serviceTask id="lineItemValidation" name="Line-Item Validation" camunda:asyncAfter="true" camunda:delegateExpression="${lineItemValidationTask}">
+        <bpmn:incoming>Flow_15ya722</bpmn:incoming>
+        <bpmn:outgoing>Flow_1a9kjau</bpmn:outgoing>
+      </bpmn:serviceTask>
+      <bpmn:serviceTask id="pricingValidation" name="Pricing Validation" camunda:asyncAfter="true" camunda:delegateExpression="${pricingValidationTask}">
+        <bpmn:incoming>Flow_1u3for3</bpmn:incoming>
+        <bpmn:outgoing>Flow_07ilog8</bpmn:outgoing>
+      </bpmn:serviceTask>
+      <bpmn:sequenceFlow id="Flow_0akxmwa" sourceRef="Gateway_1fwdo6o" targetRef="schedulePaymentInitiation" />
+      <bpmn:endEvent id="Event_0cq8xyf">
+        <bpmn:incoming>Flow_1n8pbmi</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:sequenceFlow id="Flow_1n8pbmi" sourceRef="schedulePaymentInitiation" targetRef="Event_0cq8xyf" />
+    </bpmn:subProcess>
+    <bpmn:sequenceFlow id="Flow_0sydii8" sourceRef="StartEvent_1" targetRef="loadInvoices" />
+    <bpmn:sequenceFlow id="Flow_1qqilb7" sourceRef="loadInvoices" targetRef="Activity_0rgrher" />
+    <bpmn:sequenceFlow id="Flow_1q7zkph" sourceRef="Activity_0rgrher" targetRef="Event_11kekmw" />
+    <bpmn:textAnnotation id="TextAnnotation_1mthlug">
+      <bpmn:text>Start event triggered at 6PM</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_1wlgkrp" sourceRef="StartEvent_1" targetRef="TextAnnotation_1mthlug" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_119gyfd">
+      <bpmndi:BPMNShape id="Participant_15xwjp2_di" bpmnElement="invoicesProcessingParticipant" isHorizontal="true">
+        <dc:Bounds x="160" y="52" width="1330" height="468" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1q7zkph_di" bpmnElement="Flow_1q7zkph">
+        <di:waypoint x="1370" y="284" />
+        <di:waypoint x="1422" y="284" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1qqilb7_di" bpmnElement="Flow_1qqilb7">
+        <di:waypoint x="420" y="277" />
+        <di:waypoint x="490" y="277" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0sydii8_di" bpmnElement="Flow_0sydii8">
+        <di:waypoint x="255" y="277" />
+        <di:waypoint x="320" y="277" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Event_032bv26_di" bpmnElement="StartEvent_1">
+        <dc:Bounds x="219" y="259" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1xzee9x_di" bpmnElement="loadInvoices">
+        <dc:Bounds x="320" y="237" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_11kekmw_di" bpmnElement="Event_11kekmw">
+        <dc:Bounds x="1422" y="266" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0rgrher_di" bpmnElement="Activity_0rgrher" isExpanded="true">
+        <dc:Bounds x="490" y="87" width="880" height="393" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1n8pbmi_di" bpmnElement="Flow_1n8pbmi">
+        <di:waypoint x="1230" y="277" />
+        <di:waypoint x="1282" y="277" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0akxmwa_di" bpmnElement="Flow_0akxmwa">
+        <di:waypoint x="1085" y="277" />
+        <di:waypoint x="1130" y="277" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1cs9zmo_di" bpmnElement="Flow_1cs9zmo">
+        <di:waypoint x="720" y="277" />
+        <di:waypoint x="775" y="277" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0cpyjqf_di" bpmnElement="Flow_0cpyjqf">
+        <di:waypoint x="566" y="277" />
+        <di:waypoint x="620" y="277" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1yqk97g_di" bpmnElement="Flow_1yqk97g">
+        <di:waypoint x="980" y="170" />
+        <di:waypoint x="1060" y="170" />
+        <di:waypoint x="1060" y="252" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_07ilog8_di" bpmnElement="Flow_07ilog8">
+        <di:waypoint x="980" y="390" />
+        <di:waypoint x="1060" y="390" />
+        <di:waypoint x="1060" y="302" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1a9kjau_di" bpmnElement="Flow_1a9kjau">
+        <di:waypoint x="980" y="277" />
+        <di:waypoint x="1035" y="277" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1h3hs62_di" bpmnElement="Flow_1h3hs62">
+        <di:waypoint x="800" y="252" />
+        <di:waypoint x="800" y="170" />
+        <di:waypoint x="880" y="170" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1u3for3_di" bpmnElement="Flow_1u3for3">
+        <di:waypoint x="800" y="302" />
+        <di:waypoint x="800" y="390" />
+        <di:waypoint x="880" y="390" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_15ya722_di" bpmnElement="Flow_15ya722">
+        <di:waypoint x="825" y="277" />
+        <di:waypoint x="880" y="277" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Event_1m7vx25_di" bpmnElement="Event_1m7vx25">
+        <dc:Bounds x="530" y="259" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1331yln_di" bpmnElement="Gateway_1nlv24k">
+        <dc:Bounds x="775" y="252" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0afltiq_di" bpmnElement="Gateway_1fwdo6o">
+        <dc:Bounds x="1035" y="252" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_175yt2b_di" bpmnElement="schedulePaymentInitiation">
+        <dc:Bounds x="1130" y="237" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1axrbq9_di" bpmnElement="scanInvoice">
+        <dc:Bounds x="620" y="237" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_161kb8m_di" bpmnElement="nameVlidation">
+        <dc:Bounds x="880" y="130" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1g64g6p_di" bpmnElement="lineItemValidation">
+        <dc:Bounds x="880" y="237" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0ftncbh_di" bpmnElement="pricingValidation">
+        <dc:Bounds x="880" y="350" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0cq8xyf_di" bpmnElement="Event_0cq8xyf">
+        <dc:Bounds x="1282" y="259" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_1mthlug_di" bpmnElement="TextAnnotation_1mthlug">
+        <dc:Bounds x="260" y="170" width="129" height="44" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_1wlgkrp_di" bpmnElement="Association_1wlgkrp">
+        <di:waypoint x="248" y="263" />
+        <di:waypoint x="287" y="214" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
