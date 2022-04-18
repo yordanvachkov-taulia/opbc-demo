@@ -1,0 +1,38 @@
+<form class="form-horizontal" role="form">
+  <h1>Enter assignment score</h1>
+  <div class="form-group">
+    <label class="col-lg-3">Participant Name</label>
+    <div class="col-lg-9">
+      <span>{{participantName}}</span>
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="col-lg-3">Participant Email</label>
+    <div class="col-lg-9">
+      <span>{{participantEmail}}</span>
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="col-lg-3">Score</label>
+    <div class="col-lg-9">
+      <span>{{totalScore}}</span>
+    </div>
+  </div>
+
+  <script cam-script type="form-script">
+     var variableManager = camForm.variableManager
+     inject(['$rootScope', function ($rootScope) {
+        camForm.on('form-loaded', function (evt) {
+          variableManager.fetchVariable('participantName');
+          variableManager.fetchVariable('participantEmail');
+          variableManager.fetchVariable('score');
+        })
+
+        camForm.on('variables-fetched', function () {
+          $scope.participantName = variableManager.variableValue('participantName')
+          $scope.participantEmail = variableManager.variableValue('participantEmail')
+          $scope.totalScore = variableManager.variableValue('score')
+        })
+     }])
+  </script>
+</form>

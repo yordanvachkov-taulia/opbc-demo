@@ -16,6 +16,7 @@ class CampaignService {
   void startCampaignProcess(Participant participant) {
     runtimeService.createProcessInstanceByKey(CAMPAIGN_PROCESS.process)
       .businessKey(participant.email)
+      .setVariable('participantEmail', participant.email)
       .setVariable('participantName', participant.name)
       .execute()
   }
