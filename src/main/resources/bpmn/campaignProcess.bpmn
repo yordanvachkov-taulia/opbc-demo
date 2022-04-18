@@ -24,11 +24,11 @@
       <bpmn:incoming>Flow_07cbcvj</bpmn:incoming>
       <bpmn:outgoing>Flow_0736y0b</bpmn:outgoing>
     </bpmn:receiveTask>
-    <bpmn:serviceTask id="sendRejectionEmail" name="Send rejection email" camunda:delegateExpression="${sendRejectionEmailTask}">
+    <bpmn:serviceTask id="sendRejectionEmail" name="Send rejection email" camunda:asyncBefore="true" camunda:delegateExpression="${sendRejectionEmailTask}">
       <bpmn:incoming>Flow_1sn8igq</bpmn:incoming>
       <bpmn:outgoing>Flow_0qdsa22</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="calculateScore" name="Calculate total score" camunda:delegateExpression="${calculateScoreTask}">
+    <bpmn:serviceTask id="calculateScore" name="Calculate total score" camunda:asyncAfter="true" camunda:delegateExpression="${calculateScoreTask}">
       <bpmn:incoming>Flow_0736y0b</bpmn:incoming>
       <bpmn:outgoing>Flow_1yt696a</bpmn:outgoing>
     </bpmn:serviceTask>

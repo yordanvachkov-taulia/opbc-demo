@@ -11,5 +11,7 @@ class SendRejectionEmailTask implements JavaDelegate {
   @Override
   void execute(DelegateExecution execution) throws Exception {
     log.info("Sending rejection email to participant[${execution.getBusinessKey()}]")
+
+    throw new RuntimeException('Something went wrong')
   }
 }
