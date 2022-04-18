@@ -1,7 +1,7 @@
 plugins {
-	id 'org.springframework.boot' version '2.6.6'
-	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
-	id 'groovy'
+  id 'org.springframework.boot' version '2.6.6'
+  id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+  id 'groovy'
 }
 
 group = 'com.example.yorvac'
@@ -9,19 +9,23 @@ version = '1.0.0'
 sourceCompatibility = '1.8'
 
 repositories {
-	mavenCentral()
+  mavenCentral()
 }
 
 dependencies {
-	implementation 'org.camunda.bpm.springboot:camunda-bpm-spring-boot-starter:7.17.0'
-	implementation 'org.camunda.bpm.springboot:camunda-bpm-spring-boot-starter-webapp:7.17.0'
-	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.codehaus.groovy:groovy'
-	runtimeOnly 'com.h2database:h2'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+  implementation 'org.camunda.bpm.springboot:camunda-bpm-spring-boot-starter:7.17.0'
+  implementation 'org.camunda.bpm.springboot:camunda-bpm-spring-boot-starter-webapp:7.17.0'
+  implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+  implementation 'org.springframework.boot:spring-boot-starter-web'
+  implementation 'org.codehaus.groovy:groovy'
+  runtimeOnly 'com.h2database:h2'
+
+  testImplementation 'org.camunda.bpm.extension:camunda-bpm-mockito:2.2'
+  testImplementation 'org.camunda.bpm.assert:camunda-bpm-assert:15.0.0'
+  testImplementation 'org.camunda.bpm.extension:camunda-bpm-junit5:1.1.0'
+  testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
 tasks.named('test') {
-	useJUnitPlatform()
+  useJUnitPlatform()
 }

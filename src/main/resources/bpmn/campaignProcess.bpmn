@@ -23,7 +23,7 @@
       <bpmn:incoming>Flow_033ywto</bpmn:incoming>
       <bpmn:outgoing>Flow_1dv60fe</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:serviceTask id="calculateScore" name="Calculate total score" camunda:asyncAfter="true" camunda:delegateExpression="${calculateScoreTask}">
+    <bpmn:serviceTask id="calculateScore" name="Calculate total score" camunda:delegateExpression="${calculateScoreTask}">
       <bpmn:incoming>Flow_1dv60fe</bpmn:incoming>
       <bpmn:outgoing>Flow_1yt696a</bpmn:outgoing>
     </bpmn:serviceTask>
@@ -32,10 +32,7 @@
       <bpmn:outgoing>Flow_0z0esu0</bpmn:outgoing>
       <bpmn:outgoing>Flow_1sn8igq</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:serviceTask id="sendInvitationEmail" name="Send invitation email" camunda:asyncBefore="true" camunda:asyncAfter="true" camunda:delegateExpression="${sendInvitationEmailTask}">
-      <bpmn:extensionElements>
-        <camunda:failedJobRetryTimeCycle>R3/PT20S</camunda:failedJobRetryTimeCycle>
-      </bpmn:extensionElements>
+    <bpmn:serviceTask id="sendInvitationEmail" name="Send invitation email" camunda:delegateExpression="${sendInvitationEmailTask}">
       <bpmn:incoming>Flow_0z0esu0</bpmn:incoming>
       <bpmn:outgoing>Flow_05uyryt</bpmn:outgoing>
     </bpmn:serviceTask>
