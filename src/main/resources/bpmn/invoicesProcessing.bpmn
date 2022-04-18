@@ -48,7 +48,7 @@
         <bpmn:incoming>Flow_0akxmwa</bpmn:incoming>
         <bpmn:outgoing>Flow_1n8pbmi</bpmn:outgoing>
       </bpmn:serviceTask>
-      <bpmn:serviceTask id="scanInvoice" name="OCR" camunda:asyncAfter="true" camunda:exclusive="false" camunda:delegateExpression="${ocrTask}">
+      <bpmn:serviceTask id="scanInvoice" name="Scan Invoice" camunda:asyncAfter="true" camunda:exclusive="false" camunda:delegateExpression="${scanInvoiceTask}">
         <bpmn:incoming>Flow_0cpyjqf</bpmn:incoming>
         <bpmn:outgoing>Flow_1cs9zmo</bpmn:outgoing>
       </bpmn:serviceTask>

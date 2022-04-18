@@ -13,6 +13,9 @@ repositories {
 }
 
 dependencies {
+  implementation group: 'org.camunda.bpm', name: 'camunda-engine-plugin-spin', version: '7.17.0'
+  implementation group: 'org.camunda.spin', name: 'camunda-spin-dataformat-json-jackson', version: '1.14.1'
+
   implementation 'org.camunda.bpm.springboot:camunda-bpm-spring-boot-starter:7.17.0'
   implementation 'org.camunda.bpm.springboot:camunda-bpm-spring-boot-starter-webapp:7.17.0'
   implementation 'org.springframework.boot:spring-boot-starter-jdbc'

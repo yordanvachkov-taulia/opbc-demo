@@ -7,10 +7,11 @@ import org.springframework.stereotype.Component
 
 @Slf4j
 @Component
-class OcrTask implements JavaDelegate {
+class ScanInvoiceTask implements JavaDelegate {
+
   @Override
   void execute(DelegateExecution execution) throws Exception {
-    log.info("Scan invoice[${execution.getVariable('invoice')}]")
+    log.info('Pretend to be doing some kind of scanning..')
     Thread.sleep(10000)
   }
 }

@@ -1,0 +1,6 @@
+invoiceNumber,buyerName,supplierName,itemIdentifier,itemName,pricePerUnit,quantity,totalPrice,currency
+d9e9c50dfacf,Tazz,Pixope,ec1d1f45-6e00-48bd-ad9e-1bbabdf15d9b,Bread - Kimel Stick Poly,12.98,35,454.3,USD
+6cd77982f55f,Tazz,Pixope,7493f589-c86a-4ffe-9292-ed83e1c7570a,Hersey Shakes,38.24,60,2294.4,USD
+55a9636d4571,Tazz,Pixope,f5b77c05-d384-4cdb-9c23-f4e95e86e273,Sandwich Wrap,81.22,40,3248.8,USD
+8488bab5f4a9,Tazz,Pixope,e2c17113-99b6-4fb7-b78a-0e6dcf33632b,Celery Root,55.56,25,1389.0,USD
+98b088816d83,Tazz,Pixope,80b669de-dfa5-43c1-b3dd-553d7a66fd89,Grenadine,57.69,40,2307.6,USD

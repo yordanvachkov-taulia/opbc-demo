@@ -1,5 +1,6 @@
 package com.example.yorvac.invoice.delegate
 
+import com.example.yorvac.invoice.model.Invoice
 import groovy.util.logging.Slf4j
 import org.camunda.bpm.engine.delegate.DelegateExecution
 import org.camunda.bpm.engine.delegate.JavaDelegate
@@ -10,7 +11,8 @@ import org.springframework.stereotype.Component
 class NameValidationTask implements JavaDelegate {
   @Override
   void execute(DelegateExecution execution) throws Exception {
-    log.info("Validating buyer and supplier names")
-    Thread.sleep(1000)
+    Invoice invoice = execution.getVariable('invoice') as Invoice
+    log.info("Validating buyer and supplier names for invoice[${invoice.invoiceNumber}]")
+    Thread.sleep(5000)
   }
 }
