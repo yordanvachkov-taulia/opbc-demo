@@ -24,6 +24,7 @@ class CampaignService {
     log.info("Starting campaign process for participant[${participant.email}]")
     runtimeService.createProcessInstanceByKey(CAMPAIGN_PROCESS.process)
       .businessKey(participant.email)
+      .setVariable('participantEmail', participant.email)
       .setVariable('participantName', participant.name)
       .execute()
   }
