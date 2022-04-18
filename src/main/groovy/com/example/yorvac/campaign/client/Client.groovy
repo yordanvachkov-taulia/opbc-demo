@@ -1,5 +1,6 @@
 package com.example.yorvac.campaign.client
 
+import com.example.yorvac.campaign.model.AssignmentsScore
 import com.example.yorvac.campaign.model.Participant
 import com.example.yorvac.campaign.service.CampaignService
 import org.springframework.beans.factory.annotation.Autowired
@@ -15,10 +16,15 @@ class Client {
   @Autowired
   CampaignService campaignService
 
-  @PostMapping()
+  @PostMapping
   String startCampaignForParticipant(@RequestBody Participant participant) {
     campaignService.startCampaignProcess(participant)
     'Success!'
+  }
+
+  @PostMapping('/assignments/score')
+  String submitAssignmentsScore(@RequestBody AssignmentsScore assignmentsScore) {
+    campaignService.submitAssignmentScore(assignmentsScore)
   }
 
 }
